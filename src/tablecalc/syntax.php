@@ -21,7 +21,7 @@ class syntax_plugin_tablecalc extends DokuWiki_Syntax_Plugin {
 			'date'   => '09-02-17',
 			'name'   => 'Table Calculations Plugin',
 			'desc'   => 'Enables Excel style formulas in table syntax',
-			'url'    => 'https://narezka.org/tablecalc',
+			'url'    => 'https://github.com/glasolin/tablecalc',
 		);
 	}
 
