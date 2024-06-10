@@ -4,7 +4,7 @@ if(!defined('DOKU_INC')) die();
 
 if(!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 require_once(DOKU_PLUGIN.'syntax.php');
- 
+
 /**
  * All DokuWiki plugins to extend the parser/rendering mechanism
  * need to inherit from this class
@@ -24,17 +24,17 @@ class syntax_plugin_tablecalc extends DokuWiki_Syntax_Plugin {
 			'url'    => 'https://narezka.org/tablecalc',
 		);
 	}
- 
+
 	function getType() { return 'substition'; }
 	function getSort() { return 1213; }
- 
+
 	/**
 	* Connect pattern to lexer
 	*/
 	function connectTo($mode) {
 		$this->Lexer->addSpecialPattern("~~=[_a-z\ A-Z0-9\%\:\.,\\\/\*\-\+\(\)\&\|#><!=;]*~~", $mode, 'plugin_tablecalc');
 	}
- 
+
 	/**
 	* Handle the match
 	*/
@@ -57,10 +57,9 @@ class syntax_plugin_tablecalc extends DokuWiki_Syntax_Plugin {
 		$match=preg_replace("/#([^\(\);,]+)/","'\\1'",$match);
 		$match=preg_replace("/\(([a-z0-9_]+)\)/","('\\1')",$match);
 		$this->id_index++;
-		return array('formula'=>$match, 'divid'=>'__tablecalc'.$this->id_index,'idx'=>$this->id_index);
-
+		return array('formula'=>$match, 'divid'=>'__tablecalc_'.$ID.'_'.$this->id_index,'idx'=>$this->id_index);
 	}
- 
+
 	function render($mode, Doku_Renderer $renderer, $data) {
 		global $INFO, $ID, $conf;
 		//var_dump($data);
