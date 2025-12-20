@@ -42,7 +42,7 @@ class syntax_plugin_tablecalc extends DokuWiki_Syntax_Plugin {
 		global $ID, $ACT, $INFO;
 		$signs="-~=+*.,;\/!|&\(\)";
 		$pattern="/[$signs]*([a-zA-Z]+)\(/is";
-		$aAllowed=array("cell","row","col","sum","average","count","countif","nop","round","range","label","min","max","calc","check","compare");
+		$aAllowed=array("cell","row","col","sum","average","count","countif","nop","round","range","label","min","max","calc","check","compare", "sumif");
 		if (preg_match_all($pattern,$match,$aMatches)) {
 			foreach ($aMatches[1] as $f) {
 				if (!in_array(strtolower($f),$aAllowed)) {
