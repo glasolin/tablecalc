@@ -121,8 +121,8 @@ function row() {
 }
 
 function cell(x,y) {
-	var tmp=tablecalcVal(x,y,tablecalc_table);
-	if ( (tmp=='notset') || (tmp=='notnum')) {
+	var tmp=tablecalcVal(x,y,tablecalc_table, 1);
+	if ( tmp=='notset' ) {
 		return '';
 	} else {
 		return tmp;
