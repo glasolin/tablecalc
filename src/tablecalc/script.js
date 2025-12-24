@@ -210,7 +210,11 @@ function criterionMatch(value, criterion) {
     }
 
     if (typeof criterion === 'string') {
-        if (criterion.startsWith('>')) {
+        if (criterion.startsWith('>=')) {
+            return parseFloat(value) >= parseFloat(criterion.substring(2));
+        } else if (criterion.startsWith('<=')) {
+            return parseFloat(value) <= parseFloat(criterion.substring(2));
+        } else if (criterion.startsWith('>')) {
             return parseFloat(value) > parseFloat(criterion.substring(1));
         } else if (criterion.startsWith('<')) {
             return parseFloat(value) < parseFloat(criterion.substring(1));
