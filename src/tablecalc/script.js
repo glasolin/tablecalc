@@ -121,8 +121,8 @@ function row() {
 }
 
 function cell(x,y) {
-	var tmp=tablecalcVal(x,y,tablecalc_table);
-	if ( (tmp=='notset') || (tmp=='notnum')) {
+	var tmp=tablecalcVal(x,y,tablecalc_table, 1);
+	if ( tmp=='notset' ) {
 		return '';
 	} else {
 		return tmp;
@@ -203,6 +203,82 @@ function countif(range,check,operation) {
 	}
 	return cnt;
 }
+
+function criterionMatch(value, criterion) {
+    if (typeof value === 'undefined') {
+        return false;
+    }
+
+    if (typeof criterion === 'string') {
+        if (criterion.startsWith('>=')) {
+            return parseFloat(value) >= parseFloat(criterion.substring(2));
+        } else if (criterion.startsWith('<=')) {
+            return parseFloat(value) <= parseFloat(criterion.substring(2));
+        } else if (criterion.startsWith('>')) {
+            return parseFloat(value) > parseFloat(criterion.substring(1));
+        } else if (criterion.startsWith('<')) {
+            return parseFloat(value) < parseFloat(criterion.substring(1));
+        } else if (criterion.startsWith('=')) {
+            return parseFloat(value) == parseFloat(criterion.substring(1));
+        } else if (criterion.includes('*') || criterion.includes('?')) {
+            // Mitigate ReDoS: collapse multiple wildcards
+            let safeCriterion = criterion.replace(/\*+/g, '*');
+
+            // Build regex from wildcard string
+            let regexStr = "^";
+            for (let i = 0; i < safeCriterion.length; i++) {
+                let char = safeCriterion[i];
+                if (char === '~') {
+                    // Next char is literal
+                    i++;
+                    if (i < safeCriterion.length) {
+                        // escape for regex
+                        regexStr += safeCriterion[i].replace(/([.*+?^${}()|\[\]\/\\])/g, "\\$1");
+                    }
+                } else if (char === '*') {
+                    regexStr += ".*";
+                } else if (char === '?') {
+                    regexStr += ".";
+                } else {
+                    // escape for regex
+                    regexStr += char.replace(/([.*+?^${}()|\[\]\/\\])/g, "\\$1");
+                }
+            }
+            regexStr += "$";
+            
+            try {
+                let regex = new RegExp(regexStr);
+                return regex.test(String(value));
+            } catch (e) {
+                // Invalid regex, treat as no match
+                return false;
+            }
+        }
+    }
+    return String(value) == String(criterion);
+}
+
+function sumif(range, criterion, sum_range) {
+    range = tablecalcToArray(range);
+    if (typeof sum_range === 'undefined') {
+        sum_range = range;
+    } else {
+        sum_range = tablecalcToArray(sum_range);
+    }
+
+    var s = 0;
+    for (var i = 0; i < range.length; i++) {
+        if (criterionMatch(range[i], criterion)) {
+            var val = parseFloat(sum_range[i]);
+            if (!isNaN(val)) {
+                s += val;
+                s = correctFloat(s);
+            }
+        }
+    }
+    return s;
+}
+
 
 function compare(a,b,operation) {
 	if (typeof operation == 'undefined') {
