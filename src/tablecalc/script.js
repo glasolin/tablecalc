@@ -120,6 +120,36 @@ function row() {
 	return tablecalc_crow;
 }
 
+function rows(label) {
+	if (typeof label == 'undefined') {
+		var tbl=tablecalc_table;
+	} else {
+		var tbl=tablecalc_labels[label];
+	}
+	if (!tbl) {
+		return 0;
+	} else {
+		return tbl.rows.length;
+	}
+}
+
+function cols(label) {
+	if (typeof label == 'undefined') {
+		var tbl=tablecalc_table;
+	} else {
+		var tbl=tablecalc_labels[label];
+	}
+	if (!tbl) {
+		return 0;
+	} else {
+		let cols=0;
+		for (const row of tbl.rows) {
+			cols = Math.max(cols,row.cells.length);
+		}
+		return cols;
+	}
+}
+
 function cell(x,y) {
 	var tmp=tablecalcVal(x,y,tablecalc_table, 1);
 	if ( tmp=='notset' ) {
@@ -357,8 +387,8 @@ function tablecalc(divID, formula, final) {
 		window.tablecalc_isfinal=final;
 	}
 	if (typeof tablecalc_setfinal === "undefined") {
-	    	window.tablecalc_setfinal=1;
-		setTimeout(tablecalc_final,0)
+	    window.tablecalc_setfinal=1;
+		setTimeout(tablecalc_final,100);
 	}
 
 	var oFormula=formula;
@@ -369,6 +399,8 @@ function tablecalc(divID, formula, final) {
 	var table=0;
 	var cCol=0;
 	var cRow=0;
+	var cRows=0;
+	var cCols=0;
 	var pNode=findParentNodeByName(div,"TD");
 	if (!pNode) {
 		pNode=findParentNodeByName(div,"TH");
@@ -542,14 +574,14 @@ function tablecalc_final() {
 	}
 }
 
-function findParentNodeByName(pNode,st) {
-	while ( ( pNode.nodeName!=st ) && (pNode.parentNode != null) ) {
-		pNode=pNode.parentNode;
+function findParentNodeByName(pNode, tag) {
+	tag = tag.toUpperCase();
+
+	while (pNode && pNode.nodeName !== tag) {
+		pNode = pNode.parentNode;
 	}
-	if (pNode.nodeName!=st) {
-		pNode=0;
-	}
-	return pNode;
+
+	return (pNode && pNode.nodeName === tag) ? pNode : null;
 }
 
 
